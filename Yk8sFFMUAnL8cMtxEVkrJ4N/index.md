@@ -13,5 +13,5 @@
 
 ## Source code
 A reproducible Nextflow pipeline generating
-the above reports is available from our [GitHub repository](https://github.com/icbi-lab/borst2021))))))))).
+the above results is available from our [GitHub repository](https://github.com/icbi-lab/borst2021).
 
