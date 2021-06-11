@@ -6,7 +6,7 @@ RES_DIR = params.resultsDir
 process p01_process_data {
     def id = "01_process_counts"
     cpus = 16
-    container "containers/vanderburg_scanpy.sif"
+    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_scanpy.sif"
     cache 'lenient'
     publishDir "$RES_DIR/01_process_data", mode: params.publishDirMode
 
@@ -31,7 +31,7 @@ process p01_process_data {
 
 process p02_filter_data {
     def id = "02_filter_data"
-    container "containers/vanderburg_scanpy.sif"
+    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_scanpy.sif"
     cpus = 16
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
@@ -89,7 +89,7 @@ process p02_filter_data {
 
 process p03_normalize {
     def id = "03_normalize"
-    container "containers/vanderburg_scanpy.sif"
+    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_scanpy.sif"
     cpus = 16
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
@@ -115,7 +115,7 @@ process p03_normalize {
 
 process p04_annotate_cell_types {
     def id = "04_annotate_cell_types"
-    container "containers/vanderburg_scanpy.sif"
+    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_scanpy.sif"
     cpus = 16
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
@@ -141,7 +141,7 @@ process p04_annotate_cell_types {
 
 process p05_prepare_adata_t_nk {
     def id = "05_prepare_adata_nk_t"
-    container "containers/vanderburg_scanpy.sif"
+    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_scanpy.sif"
     cpus 1
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
@@ -165,7 +165,7 @@ process p05_prepare_adata_t_nk {
 
 process p50_analysis_nkg2a {
     def id = "50_analysis_nkg2a"
-    container "containers/vanderburg_edger.sif"
+    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_edger.sif"
     cpus 1
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
@@ -187,7 +187,7 @@ process p50_analysis_nkg2a {
 
 process p51_run_de_nkg2a {
     def id = "51_run_de_nkg2a"
-    container "containers/vanderburg_edger.sif"
+    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_edger.sif"
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
     cpus 6
@@ -212,7 +212,7 @@ process p51_run_de_nkg2a {
 
 process p52_analysis_nkg2a_de {
     def id = "52_analysis_nkg2a_de"
-    container "containers/vanderburg_de_results.sif"
+    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_de_results.v2.sif"
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
     input:
@@ -221,8 +221,8 @@ process p52_analysis_nkg2a_de {
         file "*" from run_de_analysis_nkg2a_results.collect()
 
     output:
-        file "${id}.html" into nkg2a_de_analysis 
-        file "*.zip" into nkg2a_de_analysis_zip 
+        file "${id}.html" into nkg2a_de_analysis
+        file "*.zip" into nkg2a_de_analysis_zip
 
     """
     reportsrender notebook.Rmd \

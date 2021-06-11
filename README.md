@@ -34,7 +34,7 @@ Start the pipeline:
 nextflow run main.nf
 ```
 
-Nextflow will automatically download the required singularity containers 
+Nextflow will automatically download the required singularity containers
 and run the analysis.
 
  * The reports will be stored in the `deploy` folder.
@@ -43,5 +43,5 @@ and run the analysis.
 
 ## Citation
 
-> t.b.a 
+> t.b.a
 
