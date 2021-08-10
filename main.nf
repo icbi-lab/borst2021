@@ -19,7 +19,7 @@ process p01_process_data {
         file 'notebook.Rmd' from Channel.fromPath("analyses/${id}.Rmd")
 
     output:
-        file "adata.h5ad" into process_data_adata
+        file "adata.h5ad" into process_data_adata, process_data_adata_2
         file "${id}.html" into process_data_html
 
     """
@@ -97,18 +97,20 @@ process p03_normalize {
         file "is_doublet.npy" from Channel.fromPath("tables/is_doublet.npy")
         file 'lib/*' from Channel.fromPath("lib/{jupytertools,scio,scpp}.py").collect()
         file 'tables/*' from Channel.fromPath(
-            "tables/{biomart.tsv,cell_cycle_regev.tsv,adata_pca.pkl.gz}"
+            "tables/{biomart.tsv,cell_cycle_regev.tsv,adata_pca.pkl.gz,summary*.txt,ribosomal_genes.tsv}"
         ).collect()
         file 'notebook.Rmd' from Channel.fromPath("analyses/${id}.Rmd")
         file 'input_adata.h5ad' from filter_data_adata_2
+        file 'adata_unfiltered.h5ad' from  process_data_adata_2
 
     output:
         file "adata.h5ad" into correct_data_adata
         file "${id}.html" into correct_data_html
+        file "quality_stats.csv" into correct_data_quality_stats
 
     """
     execute_notebook.sh ${id} ${task.cpus} notebook.Rmd \\
-       "-r input_file input_adata.h5ad -r output_file adata.h5ad -r tables_dir tables -r doublet_file is_doublet.npy"
+       "-r input_file input_adata.h5ad -r output_file adata.h5ad -r tables_dir tables -r doublet_file is_doublet.npy -r adata_unfiltered_file adata_unfiltered.h5ad -r output_file_stats quality_stats.csv"
     """
 }
 
@@ -243,20 +245,22 @@ process deploy {
             process_data_html,
             filter_data_html,
             correct_data_html,
+            correct_data_quality_stats,
             annotate_cell_types_html,
             prepare_adata_t_nk_html,
             nkg2a_html,
             nkg2a_figures,
             nkg2a_de_analysis,
-            nkg2a_de_analysis_zip
+            nkg2a_de_analysis_zip,
         ).collect()
 
     output:
         file "*.html"
         file "*.zip"
+        file "*.csv"
 
     """
-    cp input/*.{html,zip} .
+    cp input/*.{html,zip,csv} .
     """
 }
 

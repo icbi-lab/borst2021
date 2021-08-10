@@ -5,7 +5,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.10.0
+      jupytext_version: 1.11.2
   kernelspec:
     display_name: Python [conda env:.conda-vanderburg_scanpy]
     language: python
@@ -25,8 +25,10 @@ In this notebook, we will
 
 ```{python tags=c("parameters")}
 input_file = "../results/02_filter_data/adata.h5ad"
+adata_unfiltered_file = "../results/01_process_data/adata.h5ad"
 tables_dir = "../tables"
 output_file = "tmp/adata.h5ad"
+output_file_stats = "tmp/quality_stats.csv"
 doublet_file = f"{tables_dir}/is_doublet.npy"
 ```
 
@@ -61,6 +63,10 @@ pca_file = os.path.join(tables_dir, "adata_pca.pkl.gz")
 
 ```{python load_adata, message=FALSE}
 adata = sc.read_h5ad(input_file)
+```
+
+```{python}
+adata_unfiltered = sc.read_h5ad(adata_unfiltered_file)
 ```
 
 ### Load doublets precomputed by solo
@@ -127,6 +133,118 @@ sc.pl.umap(
 print_dim(adata)
 adata = adata[~adata.obs["is_doublet"], :].copy()
 print_dim(adata)
+```
+
+## Summary statistics
+
+Generate a summary table with
+ * total number of sequenced reads per sample
+ * total number of uniquely mapped reads per sample
+ * total number of called cells (quality control and filtering for e.g., possible cell doublets, potential apoptotic cells)
+ * median number and range of uniquely maped reads per called cell 
+ * median number and range of detected genes per called cell
+ * median number and range of detected genes per called cell
+ 
+The first two metrics are based on the raw files (FASTQ and BAM), i.e. before UMI deduplication and read in from precomputed tables. The other columns are based on the counts produced by cellranger and computed on the anndata object. 
+ 
+
+```{python}
+sequenced_reads = pd.read_csv(
+    f"{tables_dir}/summary_fastq_counts.txt", names=["samples", "total_sequenced_reads"]
+)
+sequenced_reads["samples"] = [f"H{x}" for x in sequenced_reads["samples"]]
+sequenced_reads.set_index("samples", inplace=True)
+```
+
+```{python}
+uniquely_mapped_reads = pd.read_csv(
+    f"{tables_dir}/summary_uniquely_mapped_reads.txt",
+    names=["samples", "total_uniquely_mapped_reads"],
+)
+uniquely_mapped_reads["samples"] = [f"H{x}" for x in uniquely_mapped_reads["samples"]]
+uniquely_mapped_reads.set_index("samples", inplace=True)
+```
+
+```{python}
+called_cells = (
+    adata.obs.groupby("samples")
+    .size()
+    .reset_index(name="total_called_cells")
+    .set_index("samples")
+)
+```
+
+### Get fraction of ribosomal genes
+need to revert to unfiltered anndata object to get stats on ribosomal genes as we removed them earlier. 
+The statistics need to be computed on "called cells" (after doublet filtering), so we can't compute the stats in the earlier notebook either. 
+
+```{python}
+ribo_genes = pd.read_csv(
+    os.path.join(tables_dir, "ribosomal_genes.tsv"), sep="\t", comment="#"
+)["Approved symbol"].values
+```
+
+```{python}
+adata.shape
+```
+
+```{python}
+# only keep 'called cells'
+adata_unfiltered = adata_unfiltered[adata.obs_names, :].copy()
+adata_unfiltered.shape
+```
+
+```{python}
+adata_unfiltered.var["is_ribo"] = adata_unfiltered.var_names.isin(ribo_genes)
+```
+
+```{python}
+adata.obs["ribo_frac"] = np.sum(
+    adata_unfiltered[:, adata_unfiltered.var["is_ribo"]].X, axis=1
+) / np.sum(adata_unfiltered.X, axis=1)
+```
+
+### Compute stats by aggregating `obs`
+
+```{python}
+gene_stats = adata.obs.groupby("samples").agg(
+    median_genes=pd.NamedAgg(column="n_genes", aggfunc="median"),
+    min_genes=pd.NamedAgg(column="n_genes", aggfunc="min"),
+    max_genes=pd.NamedAgg(column="n_genes", aggfunc="max"),
+    median_uniquely_mapped_reads=pd.NamedAgg(column="n_counts", aggfunc="median"),
+    min_uniquely_mapped_reads=pd.NamedAgg(column="n_counts", aggfunc="min"),
+    max_uniquely_mapped_reads=pd.NamedAgg(column="n_counts", aggfunc="max"),
+    median_ribosomal_read_fraction=pd.NamedAgg(column="ribo_frac", aggfunc="median"),
+    min_ribosomal_read_fraction=pd.NamedAgg(column="ribo_frac", aggfunc="min"),
+    max_ribosomal_read_fraction=pd.NamedAgg(column="ribo_frac", aggfunc="max"),
+)
+```
+
+```{python}
+quality_table = sequenced_reads.join(uniquely_mapped_reads).join(called_cells)
+quality_table["median_uniquely_mapped_reads_per_cell"] = [
+    f'{gene_stats.loc[s, "median_uniquely_mapped_reads"]:.0f} '
+    f'({gene_stats.loc[s, "min_uniquely_mapped_reads"]:.0f} - '
+    f'{gene_stats.loc[s, "max_uniquely_mapped_reads"]:.0f})'
+    for s in quality_table.index
+]
+quality_table["median_rrna_rate_per_cell"] = [
+    f'{gene_stats.loc[s, "median_ribosomal_read_fraction"]:.2f} '
+    f'({gene_stats.loc[s, "min_ribosomal_read_fraction"]:.2f} - '
+    f'{gene_stats.loc[s, "max_ribosomal_read_fraction"]:.2f})'
+    for s in quality_table.index
+]
+quality_table["median_detected_genes_per_cell"] = [
+    f'{gene_stats.loc[s, "median_genes"]:.0f} '
+    f'({gene_stats.loc[s, "min_genes"]:.0f} - '
+    f'{gene_stats.loc[s, "max_genes"]:.0f})'
+    for s in quality_table.index
+]
+quality_table
+```
+
+```{python}
+quality_table.to_csv(output_file_stats)
 ```
 
 ## Compute highly variable genes
