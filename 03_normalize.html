@@ -14280,8 +14280,10 @@ a.anchor-link {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">input_file</span> <span class="o">=</span> <span class="s2">&quot;../results/02_filter_data/adata.h5ad&quot;</span>
+<span class="n">adata_unfiltered_file</span> <span class="o">=</span> <span class="s2">&quot;../results/01_process_data/adata.h5ad&quot;</span>
 <span class="n">tables_dir</span> <span class="o">=</span> <span class="s2">&quot;../tables&quot;</span>
 <span class="n">output_file</span> <span class="o">=</span> <span class="s2">&quot;tmp/adata.h5ad&quot;</span>
+<span class="n">output_file_stats</span> <span class="o">=</span> <span class="s2">&quot;tmp/quality_stats.csv&quot;</span>
 <span class="n">doublet_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tables_dir</span><span class="si">}</span><span class="s2">/is_doublet.npy&quot;</span>
 </pre></div>
 
@@ -14301,6 +14303,8 @@ a.anchor-link {
 <span class="n">output_file</span> <span class="o">=</span> <span class="s2">&quot;adata.h5ad&quot;</span>
 <span class="n">tables_dir</span> <span class="o">=</span> <span class="s2">&quot;tables&quot;</span>
 <span class="n">doublet_file</span> <span class="o">=</span> <span class="s2">&quot;is_doublet.npy&quot;</span>
+<span class="n">adata_unfiltered_file</span> <span class="o">=</span> <span class="s2">&quot;adata_unfiltered.h5ad&quot;</span>
+<span class="n">output_file_stats</span> <span class="o">=</span> <span class="s2">&quot;quality_stats.csv&quot;</span>
 </pre></div>
 
      </div>
@@ -14370,6 +14374,20 @@ a.anchor-link {
 </div>
 </div>
 
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">adata_unfiltered</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">adata_unfiltered_file</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -14382,7 +14400,7 @@ we load pre-computed results from the repository.</p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">is_doublet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">doublet_file</span><span class="p">)</span>
@@ -14396,7 +14414,7 @@ we load pre-computed results from the repository.</p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;is_doublet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_doublet</span>
@@ -14418,7 +14436,7 @@ The original, raw (UMI) counts are stored in <code>adata.obsm["raw_counts"]</cod
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">norm_log</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
@@ -14471,7 +14489,7 @@ computing PCA
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">pca_variance_ratio</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
@@ -14510,7 +14528,7 @@ computing PCA
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
@@ -14555,7 +14573,7 @@ computing UMAP
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">score_genes_cell_cycle</span><span class="p">(</span>
@@ -14605,7 +14623,7 @@ genes are not in var_names and ignored: [&#39;FAM64A&#39;, &#39;HN1&#39;]
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
@@ -14678,7 +14696,7 @@ genes are not in var_names and ignored: [&#39;FAM64A&#39;, &#39;HN1&#39;]
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">print_dim</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
@@ -14740,12 +14758,412 @@ genes are not in var_names and ignored: [&#39;FAM64A&#39;, &#39;HN1&#39;]
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Summary-statistics">Summary statistics<a class="anchor-link" href="#Summary-statistics">&#182;</a></h2><p>Generate a summary table with</p>
+<ul>
+<li>total number of sequenced reads per sample</li>
+<li>total number of uniquely mapped reads per sample</li>
+<li>total number of called cells (quality control and filtering for e.g., possible cell doublets, potential apoptotic cells)</li>
+<li>median number and range of uniquely maped reads per called cell </li>
+<li>median number and range of detected genes per called cell</li>
+<li>median number and range of detected genes per called cell</li>
+</ul>
+<p>The first two metrics are based on the raw files (FASTQ and BAM), i.e. before UMI deduplication and read in from precomputed tables. The other columns are based on the counts produced by cellranger and computed on the anndata object.</p>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sequenced_reads</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tables_dir</span><span class="si">}</span><span class="s2">/summary_fastq_counts.txt&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="s2">&quot;total_sequenced_reads&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">sequenced_reads</span><span class="p">[</span><span class="s2">&quot;samples&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;H</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sequenced_reads</span><span class="p">[</span><span class="s2">&quot;samples&quot;</span><span class="p">]]</span>
+<span class="n">sequenced_reads</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">uniquely_mapped_reads</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tables_dir</span><span class="si">}</span><span class="s2">/summary_uniquely_mapped_reads.txt&quot;</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="s2">&quot;total_uniquely_mapped_reads&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">uniquely_mapped_reads</span><span class="p">[</span><span class="s2">&quot;samples&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;H</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">uniquely_mapped_reads</span><span class="p">[</span><span class="s2">&quot;samples&quot;</span><span class="p">]]</span>
+<span class="n">uniquely_mapped_reads</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">called_cells</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;samples&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">size</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;total_called_cells&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;samples&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Get-fraction-of-ribosomal-genes">Get fraction of ribosomal genes<a class="anchor-link" href="#Get-fraction-of-ribosomal-genes">&#182;</a></h3><p>need to revert to unfiltered anndata object to get stats on ribosomal genes as we removed them earlier. 
+The statistics need to be computed on "called cells" (after doublet filtering), so we can't compute the stats in the earlier notebook either.</p>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ribo_genes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tables_dir</span><span class="p">,</span> <span class="s2">&quot;ribosomal_genes.tsv&quot;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;#&quot;</span>
+<span class="p">)[</span><span class="s2">&quot;Approved symbol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[19]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>(28296, 16818)</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># only keep &#39;called cells&#39;</span>
+<span class="n">adata_unfiltered</span> <span class="o">=</span> <span class="n">adata_unfiltered</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">adata_unfiltered</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[20]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>(28296, 33514)</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">adata_unfiltered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;is_ribo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata_unfiltered</span><span class="o">.</span><span class="n">var_names</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ribo_genes</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;ribo_frac&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+    <span class="n">adata_unfiltered</span><span class="p">[:,</span> <span class="n">adata_unfiltered</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;is_ribo&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">adata_unfiltered</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Compute-stats-by-aggregating-obs">Compute stats by aggregating <code>obs</code><a class="anchor-link" href="#Compute-stats-by-aggregating-obs">&#182;</a></h3>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gene_stats</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;samples&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+    <span class="n">median_genes</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">NamedAgg</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;n_genes&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;median&quot;</span><span class="p">),</span>
+    <span class="n">min_genes</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">NamedAgg</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;n_genes&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">),</span>
+    <span class="n">max_genes</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">NamedAgg</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;n_genes&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">),</span>
+    <span class="n">median_uniquely_mapped_reads</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">NamedAgg</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;n_counts&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;median&quot;</span><span class="p">),</span>
+    <span class="n">min_uniquely_mapped_reads</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">NamedAgg</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;n_counts&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">),</span>
+    <span class="n">max_uniquely_mapped_reads</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">NamedAgg</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;n_counts&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">),</span>
+    <span class="n">median_ribosomal_read_fraction</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">NamedAgg</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;ribo_frac&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;median&quot;</span><span class="p">),</span>
+    <span class="n">min_ribosomal_read_fraction</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">NamedAgg</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;ribo_frac&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">),</span>
+    <span class="n">max_ribosomal_read_fraction</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">NamedAgg</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;ribo_frac&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">quality_table</span> <span class="o">=</span> <span class="n">sequenced_reads</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">uniquely_mapped_reads</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">called_cells</span><span class="p">)</span>
+<span class="n">quality_table</span><span class="p">[</span><span class="s2">&quot;median_uniquely_mapped_reads_per_cell&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">gene_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;median_uniquely_mapped_reads&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> &#39;</span>
+    <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">gene_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;min_uniquely_mapped_reads&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> - &#39;</span>
+    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">gene_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;max_uniquely_mapped_reads&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">)&#39;</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">quality_table</span><span class="o">.</span><span class="n">index</span>
+<span class="p">]</span>
+<span class="n">quality_table</span><span class="p">[</span><span class="s2">&quot;median_rrna_rate_per_cell&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">gene_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;median_ribosomal_read_fraction&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> &#39;</span>
+    <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">gene_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;min_ribosomal_read_fraction&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> - &#39;</span>
+    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">gene_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;max_ribosomal_read_fraction&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">)&#39;</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">quality_table</span><span class="o">.</span><span class="n">index</span>
+<span class="p">]</span>
+<span class="n">quality_table</span><span class="p">[</span><span class="s2">&quot;median_detected_genes_per_cell&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">gene_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;median_genes&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> &#39;</span>
+    <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">gene_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;min_genes&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> - &#39;</span>
+    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">gene_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;max_genes&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">)&#39;</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">quality_table</span><span class="o">.</span><span class="n">index</span>
+<span class="p">]</span>
+<span class="n">quality_table</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>total_sequenced_reads</th>
+      <th>total_uniquely_mapped_reads</th>
+      <th>total_called_cells</th>
+      <th>median_uniquely_mapped_reads_per_cell</th>
+      <th>median_rrna_rate_per_cell</th>
+      <th>median_detected_genes_per_cell</th>
+    </tr>
+    <tr>
+      <th>samples</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>H68</th>
+      <td>145639312</td>
+      <td>129201630</td>
+      <td>2801</td>
+      <td>2846 (1237 - 45037)</td>
+      <td>0.24 (0.01 - 0.45)</td>
+      <td>1490 (740 - 6241)</td>
+    </tr>
+    <tr>
+      <th>H188</th>
+      <td>228929000</td>
+      <td>190873981</td>
+      <td>2063</td>
+      <td>2654 (1206 - 38909)</td>
+      <td>0.25 (0.01 - 0.43)</td>
+      <td>1421 (727 - 4787)</td>
+    </tr>
+    <tr>
+      <th>H208</th>
+      <td>465578498</td>
+      <td>388028467</td>
+      <td>2284</td>
+      <td>3498 (1154 - 64179)</td>
+      <td>0.21 (0.02 - 0.45)</td>
+      <td>1753 (766 - 6586)</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>H182</th>
+      <td>286349621</td>
+      <td>252008749</td>
+      <td>2561</td>
+      <td>2587 (1165 - 43770)</td>
+      <td>0.24 (0.01 - 0.43)</td>
+      <td>1408 (727 - 6566)</td>
+    </tr>
+    <tr>
+      <th>H205</th>
+      <td>385387851</td>
+      <td>341106543</td>
+      <td>1178</td>
+      <td>2940 (1158 - 63142)</td>
+      <td>0.18 (0.02 - 0.41)</td>
+      <td>1521 (702 - 7983)</td>
+    </tr>
+    <tr>
+      <th>H143</th>
+      <td>281522477</td>
+      <td>243022789</td>
+      <td>1760</td>
+      <td>2560 (1184 - 55511)</td>
+      <td>0.23 (0.01 - 0.38)</td>
+      <td>1450 (737 - 7160)</td>
+    </tr>
+  </tbody>
+</table>
+<p>13 rows × 6 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[25]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">quality_table</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output_file_stats</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Compute-highly-variable-genes">Compute highly variable genes<a class="anchor-link" href="#Compute-highly-variable-genes">&#182;</a></h2>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[26]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">flavor</span><span class="o">=</span><span class="s2">&quot;cell_ranger&quot;</span><span class="p">,</span> <span class="n">n_top_genes</span><span class="o">=</span><span class="mi">6000</span><span class="p">)</span>
@@ -14787,7 +15205,7 @@ added
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># PCA turned out not to be entirely reproducible on different CPU architechtures.</span>
@@ -14809,7 +15227,7 @@ added
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[28]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_pcs</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
@@ -14852,7 +15270,7 @@ running Leiden clustering
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[29]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span>
@@ -14894,7 +15312,7 @@ running Leiden clustering
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[30]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
