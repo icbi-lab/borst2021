@@ -1,0 +1,4 @@
+Cellranger was ran manually on the FASTQ files obtained from the sequencing facility.
+
+ * cellranger version v3.0.0
+ * Reference Genome: GRCh38
