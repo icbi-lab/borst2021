@@ -5,7 +5,7 @@ RES_DIR = params.resultsDir
 
 process p01_process_data {
     def id = "01_process_counts"
-    cpus = 16
+    cpus = 8
     container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_scanpy.sif"
     cache 'lenient'
     publishDir "$RES_DIR/01_process_data", mode: params.publishDirMode
@@ -32,7 +32,7 @@ process p01_process_data {
 process p02_filter_data {
     def id = "02_filter_data"
     container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_scanpy.sif"
-    cpus = 16
+    cpus = 8
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
     input:
@@ -63,7 +63,7 @@ process p02_filter_data {
 // process p02b_doublet_detection {
 //     def id = "02b_doublet_detection"
 //     conda "/home/sturm/.conda/envs/vanderburg_scanpy"
-//     cpus = 16
+//     cpus = 8
 //     clusterOptions '-V -S /bin/bash -l gpu=1 -q all.q'
 //     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
@@ -90,7 +90,7 @@ process p02_filter_data {
 process p03_normalize {
     def id = "03_normalize"
     container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_scanpy.sif"
-    cpus = 16
+    cpus = 8
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
     input:
@@ -118,7 +118,7 @@ process p03_normalize {
 process p04_annotate_cell_types {
     def id = "04_annotate_cell_types"
     container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_scanpy.sif"
-    cpus = 16
+    cpus = 8
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
     input:
@@ -189,7 +189,7 @@ process p50_analysis_nkg2a {
 
 process p51_run_de_nkg2a {
     def id = "51_run_de_nkg2a"
-    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.1.0/vanderburg_edger.sif"
+    container "https://github.com/icbi-lab/borst2021/releases/download/containers-0.2.0/vanderburg_edger.sif"
     publishDir "$RES_DIR/$id", mode: params.publishDirMode
 
     cpus 6
